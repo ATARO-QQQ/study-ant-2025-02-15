@@ -26,6 +26,7 @@
         let animationFrame;
         let running = false;
         let lastResetTime = Date.now();
+        let lastUpdateTime = Date.now();
         
         canvas.width = size;
         canvas.height = size;
@@ -41,6 +42,7 @@
             }));
             drawGrid();
             lastResetTime = Date.now();
+            lastUpdateTime = Date.now();
         }
         
         function drawGrid() {
@@ -73,11 +75,13 @@
         
         function update() {
             if (!running) return;
-            for (let i = 0; i < 100; i++) {
+            const now = Date.now();
+            if (now - lastUpdateTime >= 100) { // 100msごとに更新（1秒間に10マス）
                 ants.forEach(updateAnt);
+                drawGrid();
+                lastUpdateTime = now;
             }
-            drawGrid();
-            if (Date.now() - lastResetTime >= 60000) {
+            if (now - lastResetTime >= 60000) {
                 initialize();
             }
             animationFrame = requestAnimationFrame(update);
