@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ラングトンのアリ</title>
+    <style>
+        body { text-align: center; background-color: #222; color: white; }
+        canvas { border: 1px solid white; }
+    </style>
+</head>
+<body>
+    <h1>ラングトンのアリ (10匹)</h1>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const size = 500;
+        const gridSize = 100;
+        const cellSize = size / gridSize;
+        
+        canvas.width = size;
+        canvas.height = size;
+        
+        const grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+        
+        const ants = Array.from({ length: 10 }, () => ({
+            x: Math.floor(Math.random() * gridSize),
+            y: Math.floor(Math.random() * gridSize),
+            dir: Math.floor(Math.random() * 4)
+        }));
+        
+        function drawGrid() {
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    ctx.fillStyle = grid[y][x] ? "black" : "white";
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+        
+        function updateAnt(ant) {
+            const { x, y, dir } = ant;
+            if (grid[y][x] === 0) {
+                ant.dir = (dir + 1) % 4;
+                grid[y][x] = 1;
+            } else {
+                ant.dir = (dir + 3) % 4;
+                grid[y][x] = 0;
+            }
+            
+            switch (ant.dir) {
+                case 0: ant.y = (y - 1 + gridSize) % gridSize; break;
+                case 1: ant.x = (x + 1) % gridSize; break;
+                case 2: ant.y = (y + 1) % gridSize; break;
+                case 3: ant.x = (x - 1 + gridSize) % gridSize; break;
+            }
+        }
+        
+        function update() {
+            ants.forEach(updateAnt);
+            drawGrid();
+            requestAnimationFrame(update);
+        }
+        
+        drawGrid();
+        update();
+    </script>
+</body>
+</html>
