@@ -76,7 +76,7 @@
         function update() {
             if (!running) return;
             const now = Date.now();
-            if (now - lastUpdateTime >= 100) { // 100msごとに更新（1秒間に10マス）
+            if (now - lastUpdateTime >= 20) { // 20msごとに更新（1秒間に50マス）
                 ants.forEach(updateAnt);
                 drawGrid();
                 lastUpdateTime = now;
