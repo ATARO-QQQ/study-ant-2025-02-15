@@ -25,6 +25,7 @@
         const cellSize = size / gridSize;
         let animationFrame;
         let running = false;
+        let lastResetTime = Date.now();
         
         canvas.width = size;
         canvas.height = size;
@@ -39,6 +40,7 @@
                 dir: Math.floor(Math.random() * 4)
             }));
             drawGrid();
+            lastResetTime = Date.now();
         }
         
         function drawGrid() {
@@ -71,8 +73,13 @@
         
         function update() {
             if (!running) return;
-            ants.forEach(updateAnt);
+            for (let i = 0; i < 1000; i++) {
+                ants.forEach(updateAnt);
+            }
             drawGrid();
+            if (Date.now() - lastResetTime >= 60000) {
+                initialize();
+            }
             animationFrame = requestAnimationFrame(update);
         }
         
