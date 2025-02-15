@@ -6,31 +6,43 @@
     <title>ラングトンのアリ</title>
     <style>
         body { text-align: center; background-color: #222; color: white; }
-        canvas { border: 1px solid white; }
+        canvas { border: 1px solid white; display: block; margin: auto; }
+        button { margin: 10px; padding: 10px; font-size: 16px; }
     </style>
 </head>
 <body>
     <h1>ラングトンのアリ (10匹)</h1>
     <canvas id="canvas"></canvas>
+    <br>
+    <button id="start">開始</button>
+    <button id="stop">停止</button>
+    <button id="reset">リセット</button>
     <script>
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         const size = 500;
         const gridSize = 100;
         const cellSize = size / gridSize;
+        let animationFrame;
+        let running = false;
         
         canvas.width = size;
         canvas.height = size;
         
-        const grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
-        
-        const ants = Array.from({ length: 10 }, () => ({
-            x: Math.floor(Math.random() * gridSize),
-            y: Math.floor(Math.random() * gridSize),
-            dir: Math.floor(Math.random() * 4)
-        }));
+        let grid, ants;
+
+        function initialize() {
+            grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+            ants = Array.from({ length: 10 }, () => ({
+                x: Math.floor(Math.random() * gridSize),
+                y: Math.floor(Math.random() * gridSize),
+                dir: Math.floor(Math.random() * 4)
+            }));
+            drawGrid();
+        }
         
         function drawGrid() {
+            ctx.clearRect(0, 0, size, size);
             for (let y = 0; y < gridSize; y++) {
                 for (let x = 0; x < gridSize; x++) {
                     ctx.fillStyle = grid[y][x] ? "black" : "white";
@@ -58,13 +70,31 @@
         }
         
         function update() {
+            if (!running) return;
             ants.forEach(updateAnt);
             drawGrid();
-            requestAnimationFrame(update);
+            animationFrame = requestAnimationFrame(update);
         }
         
-        drawGrid();
-        update();
+        document.getElementById("start").addEventListener("click", () => {
+            if (!running) {
+                running = true;
+                update();
+            }
+        });
+        
+        document.getElementById("stop").addEventListener("click", () => {
+            running = false;
+            cancelAnimationFrame(animationFrame);
+        });
+        
+        document.getElementById("reset").addEventListener("click", () => {
+            running = false;
+            cancelAnimationFrame(animationFrame);
+            initialize();
+        });
+        
+        initialize();
     </script>
 </body>
 </html>
