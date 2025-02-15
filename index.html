@@ -21,7 +21,7 @@
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         const size = 500;
-        const gridSize = 100;
+        const gridSize = 200;
         const cellSize = size / gridSize;
         let animationFrame;
         let running = false;
@@ -62,10 +62,10 @@
             }
             
             switch (ant.dir) {
-                case 0: ant.y = (y - 1 + gridSize) % gridSize; break;
-                case 1: ant.x = (x + 1) % gridSize; break;
-                case 2: ant.y = (y + 1) % gridSize; break;
-                case 3: ant.x = (x - 1 + gridSize) % gridSize; break;
+                case 0: ant.y = (y - 1 >= 0) ? y - 1 : (ant.dir = 2, y + 1); break;
+                case 1: ant.x = (x + 1 < gridSize) ? x + 1 : (ant.dir = 3, x - 1); break;
+                case 2: ant.y = (y + 1 < gridSize) ? y + 1 : (ant.dir = 0, y - 1); break;
+                case 3: ant.x = (x - 1 >= 0) ? x - 1 : (ant.dir = 1, x + 1); break;
             }
         }
         
